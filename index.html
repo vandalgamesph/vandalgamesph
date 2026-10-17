@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vandal Games PH | The Vault</title>
+    
+    <!-- ADDED FAVICON -->
+    <link rel="icon" href="https://i.imgur.com/XdpF0a6.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vandalDark: '#0a0f18',
+                        vandalCard: '#111827',
+                        vandalBorder: '#1f2937',
+                        vandalTeal: '#00e5bc',
+                        vandalTealHover: '#00c4a1'
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0f18;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* PRELOADER */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #0a0f18;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .cyber-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 229, 188, 0.1);
+            border-left-color: #00e5bc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 20px rgba(0, 229, 188, 0.2);
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* BUTTONS & HOVER EFFECTS */
+        .glow-btn {
+            box-shadow: 0 0 20px rgba(0, 229, 188, 0.3);
+            transition: all 0.3s ease;
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 35px rgba(0, 229, 188, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .card-hover { transition: all 0.3s ease; }
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            background: none; border: none;
+        }
+
+        /* TAB SYSTEM UTILITIES */
+        .hidden-view {
+            display: none !important;
+        }
+
+        .nav-link {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-active {
+            color: var(--accent) !important;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 4px;
+        }
+    </style>
+</head>
+<body class="bg-vandalDark min-h-screen flex flex-col">
+
+    <!-- CYBER PRELOADER -->
+    <div id="preloader">
+        <div class="font-orbitron text-3xl font-black tracking-widest text-white mb-6">
+            VANDAL <span class="text-vandalTeal">GAMES</span>
+        </div>
+        <div class="cyber-spinner"></div>
+        <div class="text-vandalTeal mt-6 font-orbitron text-sm tracking-[0.3em] animate-pulse">INITIALIZING...</div>
+    </div>
+
+    <!-- HEADER / NAVBAR -->
+    <header class="sticky top-0 z-40 bg-vandalDark/90 backdrop-blur-md border-b border-vandalBorder">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand -->
+            <div class="flex items-center gap-3">
+                <!-- UPDATED LOGO IMAGE -->
+                <img src="https://i.imgur.com/XdpF0a6.png" alt="Vandal Games Logo" class="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(0,229,188,0.5)]">
+                <div>
+                    <span class="font-orbitron text-xl sm:text-2xl font-black tracking-wider text-white">VANDAL GAMES</span>
+                    <span class="font-orbitron text-xl sm:text-2xl font-black tracking-wider text-vandalTeal">PH</span>
+                </div>
+            </div>
+
+            <!-- Nav Links & Social Icons -->
+            <div class="hidden md:flex items-center gap-8">
+                <nav class="flex gap-6 font-orbitron text-sm font-bold tracking-wider text-gray-300">
+                    <a onclick="switchView('home')" id="nav-home" class="nav-link nav-active hover:text-vandalTeal transition">HOME</a>
+                    <a onclick="switchView('database')" id="nav-db" class="nav-link hover:text-vandalTeal transition">MASTER LIST</a>
+                    <a href="https://www.facebook.com/messages/t/61591489378986/" target="_blank" class="nav-link hover:text-vandalTeal transition">CONTACT</a>
+                </nav>
+                <div class="flex gap-4 border-l border-vandalBorder pl-6">
+                    <!-- Facebook SVG -->
+                    <a href="https://www.facebook.com/profile.php?id=61591489378986" target="_blank" class="text-gray-400 hover:text-vandalTeal transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <!-- Messenger SVG -->
+                    <a href="https://www.facebook.com/messages/t/61591489378986/" target="_blank" class="text-gray-400 hover:text-vandalTeal transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.14 2 11.25c0 2.87 1.455 5.432 3.75 7.152v3.74l3.415-1.874c.91.252 1.862.382 2.835.382 5.523 0 10-4.14 10-9.25C22 6.14 17.523 2 12 2zm1.093 12.392l-2.825-3.025-5.503 3.025 6.06-6.425 2.88 3.025 5.448-3.025-6.06 6.425z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- WRAPPER FOR HOME VIEW -->
+    <div id="view-home">
+        <!-- HERO SECTION WITH VIDEO BACKGROUND -->
+        <section class="relative py-32 px-4 text-center overflow-hidden border-b border-vandalBorder/50">
+        
+        <!-- Restored Video Background -->
+        <video src="https://i.imgur.com/hXCKrNs.mp4" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>
+
+        <!-- Dark Overlay Gradient to darken the video globally -->
+        <div class="absolute inset-0 bg-vandalDark/75 z-0"></div>
+        
+        <!-- Hero Content Wrapped in a Frosted Glass Container for Ultimate Readability -->
+        <div class="max-w-4xl mx-auto relative z-10 bg-black/40 backdrop-blur-md p-8 md:p-14 rounded-3xl border border-vandalTeal/20 shadow-[0_0_40px_rgba(0,0,0,0.8)]">
+            <h1 class="font-orbitron text-4xl sm:text-5xl md:text-7xl font-black text-white tracking-tight mb-4 uppercase drop-shadow-2xl">
+                THE VANDAL <span class="text-vandalTeal">VAULT</span>
+            </h1>
+            
+            <p class="text-gray-100 text-base sm:text-lg mb-6 max-w-2xl mx-auto font-medium tracking-wide drop-shadow-lg">
+                🎮 10,000+ GAMES FOR ONLY ₱239! <br> Premium gaming for your PC, Laptop, Steam Deck & Windows Handhelds — ROG Ally, Legion Go, MSI Claw & more!
+            </p>
+
+            <!-- ADDED: VISUAL PLATFORM ICONS -->
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-10">
+                <!-- Windows -->
+                <div class="flex items-center gap-2 bg-vandalDark/80 border border-vandalBorder px-4 py-2 rounded-full text-xs sm:text-sm font-orbitron font-bold text-gray-300 tracking-wider shadow-md hover:border-vandalTeal transition-colors">
+                    <svg class="w-4 h-4 text-vandalTeal" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.949-1.801"/></svg>
+                    WINDOWS
+                </div>
+                <!-- Steam Deck -->
+                <div class="flex items-center gap-2 bg-vandalDark/80 border border-vandalBorder px-4 py-2 rounded-full text-xs sm:text-sm font-orbitron font-bold text-gray-300 tracking-wider shadow-md hover:border-vandalTeal transition-colors">
+                    <svg class="w-4 h-4 text-vandalTeal" fill="currentColor" viewBox="0 0 24 24"><path d="M11.979 0C5.673 0 .411 4.327 0 10.01c0 .034 0 .068.005.103l4.981 2.067a4.137 4.137 0 0 1 2.822-2.186 4.164 4.164 0 0 1 4.904 2.895l4.896-1.393a.262.262 0 0 0 .157-.123C19.23 8.358 15.938 6.07 11.979 6.07c-3.155 0-5.918 1.488-7.533 3.734l-2.02-.839C4.301 3.86 7.854 0 11.979 0zM8.196 11.168a2.531 2.531 0 0 0-1.745 3.031 2.532 2.532 0 0 0 3.031 1.746 2.532 2.532 0 0 0 1.746-3.031 2.532 2.532 0 0 0-3.032-1.746zM24 10.01c0-5.522-4.478-10.01-10.01-10.01v.001c4.664 0 8.528 3.197 9.664 7.545l-4.708 1.34a.276.276 0 0 0-.166.11 4.093 4.093 0 0 1-5.183 1.954L6.96 14.532a.138.138 0 0 0-.083.053c-1.317 1.91-1.365 4.542-.14 6.643a6.837 6.837 0 0 0 5.242 3.39c5.234-.415 9.387-4.79 9.387-10.158 0-.036 0-.071-.001-.106zM13.684 15.53a1.442 1.442 0 0 0-1.737-.998 1.442 1.442 0 0 0-.998 1.736 1.443 1.443 0 0 0 1.736.999 1.443 1.443 0 0 0 .999-1.737z"/></svg>
+                    STEAM DECK
+                </div>
+                <!-- ROG Ally -->
+                <div class="flex items-center gap-2 bg-vandalDark/80 border border-vandalBorder px-4 py-2 rounded-full text-xs sm:text-sm font-orbitron font-bold text-gray-300 tracking-wider shadow-md hover:border-vandalTeal transition-colors">
+                    <svg class="w-4 h-4 text-vandalTeal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    ROG ALLY
+                </div>
+                <!-- Legion Go -->
+                <div class="flex items-center gap-2 bg-vandalDark/80 border border-vandalBorder px-4 py-2 rounded-full text-xs sm:text-sm font-orbitron font-bold text-gray-300 tracking-wider shadow-md hover:border-vandalTeal transition-colors">
+                    <svg class="w-4 h-4 text-vandalTeal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                    LEGION GO
+                </div>
+            </div>
+            
+            <!-- Stacking all 3 buttons here -->
+            <div class="flex flex-col gap-4 max-w-xl mx-auto">
+                <a href="javascript:void(0)" onclick="switchView('database')" 
+                   class="glow-btn inline-flex items-center justify-center gap-3 bg-gradient-to-r from-vandalTeal to-[#00a385] text-vandalDark font-orbitron font-bold text-sm sm:text-base px-6 py-4 rounded-xl uppercase tracking-widest border border-vandalTealHover w-full transition-transform hover:scale-105">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    COMPLETE LIST OF GAMES (10,000+)
+                </a>
+            </div>
+        </div>
+        </section>
+
+        <!-- TOP 20 GAMES SECTION (RESTORED GRID CONTAINER) -->
+        <section class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="mb-10 text-center border-b border-vandalBorder/50 pb-6">
+                <h2 class="font-orbitron text-2xl sm:text-3xl font-black text-white uppercase tracking-widest drop-shadow-md">
+                    TOP 20 MOST POPULAR GAMES IN SHOP
+                </h2>
+                <div class="h-1 w-24 bg-vandalTeal mx-auto mt-4 rounded-full shadow-[0_0_10px_rgba(0,229,188,0.5)]"></div>
+            </div>
+            
+            <!-- This is the missing ID the script was looking for -->
+            <div id="gameGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Javascript will render the game cards here -->
+            </div>
+
+            <!-- NEW SECTION: 10,000+ MORE GAMES CALL TO ACTION -->
+            <div class="mt-16 text-center border-t border-vandalBorder/50 pt-12">
+                <h2 class="font-orbitron text-2xl sm:text-4xl font-black text-white tracking-widest drop-shadow-md mb-3">
+                    AND <span class="text-vandalTeal">10,000+</span> MORE GAMES TO EXPLORE!
+                </h2>
+                <p class="text-gray-300 text-lg sm:text-xl font-medium tracking-wide mb-10">
+                    For <span class="text-vandalTeal font-bold">LOW END</span> devices and <span class="text-vandalTeal font-bold">HIGH END</span> devices!
+                </p>
+                <a href="javascript:void(0)" onclick="switchView('database')" 
+                   class="glow-btn inline-flex items-center justify-center gap-3 bg-gradient-to-r from-vandalTeal to-[#00a385] text-vandalDark font-orbitron font-bold text-sm sm:text-base px-8 py-5 rounded-xl uppercase tracking-widest border border-vandalTealHover transition-transform hover:scale-105 shadow-[0_0_30px_rgba(0,229,188,0.4)]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    COMPLETE LIST OF GAMES (10,000+)
+                </a>
+            </div>
+        </section>
+
+        <!-- CLOSER SECTION: BENEFITS & HOW IT WORKS -->
+        <section class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-vandalBorder/50">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Traits / Benefits -->
+                <div class="bg-vandalCard/50 border border-vandalBorder rounded-2xl p-8 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                    <h2 class="font-orbitron text-2xl font-black text-vandalTeal uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                        PREMIUM BENEFITS
+                    </h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4 bg-vandalDark/50 p-4 rounded-xl border border-vandalBorder hover:border-vandalTeal/50 transition-colors">
+                            <span class="text-xl">💳</span>
+                            <span class="font-bold text-gray-200 tracking-wide uppercase mt-0.5">ONE TIME PAYMENT</span>
+                        </li>
+                        <li class="flex items-start gap-4 bg-vandalDark/50 p-4 rounded-xl border border-vandalBorder hover:border-vandalTeal/50 transition-colors">
+                            <span class="text-xl">♾️</span>
+                            <span class="font-bold text-gray-200 tracking-wide uppercase mt-0.5">LIFETIME ACCESS GUARANTEED</span>
+                        </li>
+                        <li class="flex items-start gap-4 bg-vandalDark/50 p-4 rounded-xl border border-vandalBorder hover:border-vandalTeal/50 transition-colors">
+                            <span class="text-xl">✨</span>
+                            <span class="font-bold text-gray-200 tracking-wide uppercase mt-0.5">HIGH QUALITY GAMES</span>
+                        </li>
+                        <li class="flex items-start gap-4 bg-vandalDark/50 p-4 rounded-xl border border-vandalBorder hover:border-vandalTeal/50 transition-colors">
+                            <span class="text-xl">🔄</span>
+                            <span class="font-bold text-gray-200 tracking-wide uppercase mt-0.5">WEEKLY UPDATES</span>
+                        </li>
+                        <li class="flex items-start gap-4 bg-vandalDark/50 p-4 rounded-xl border border-vandalBorder hover:border-vandalTeal/50 transition-colors">
+                            <span class="text-xl">👨‍💻</span>
+                            <span class="font-bold text-gray-200 tracking-wide uppercase mt-0.5">FREE SUPPORT FROM I.T SPECIALISTS</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- How It Works -->
+                <div class="bg-vandalCard/50 border border-vandalBorder rounded-2xl p-8 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex flex-col justify-between">
+                    <div>
+                        <h2 class="font-orbitron text-2xl font-black text-white uppercase tracking-widest mb-6 flex items-center gap-3">
+                            <span class="text-2xl">🎮</span> HOW IT WORKS
+                        </h2>
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4">
+                                <div class="bg-vandalTeal/10 text-vandalTeal p-3 rounded-lg border border-vandalTeal/30 text-xl">📩</div>
+                                <div class="mt-2 text-gray-300 font-medium text-lg">Get your access.</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="bg-vandalTeal/10 text-vandalTeal p-3 rounded-lg border border-vandalTeal/30 text-xl">📥</div>
+                                <div class="mt-2 text-gray-300 font-medium text-lg">Follow our easy guide.</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="bg-vandalTeal/10 text-vandalTeal p-3 rounded-lg border border-vandalTeal/30 text-xl">🎮</div>
+                                <div class="mt-2 text-gray-300 font-medium text-lg">Download and start playing!</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="bg-vandalTeal/10 text-vandalTeal p-3 rounded-lg border border-vandalTeal/30 text-xl">🛠️</div>
+                                <div class="mt-2 text-gray-300 font-medium text-lg">Need help? Our support team is here for you.</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <a href="https://www.facebook.com/messages/t/61591489378986/" target="_blank" class="mt-10 glow-btn block text-center bg-vandalTeal text-vandalDark font-orbitron font-black text-lg px-8 py-5 rounded-xl uppercase tracking-widest border border-vandalTealHover transition-transform hover:scale-105 shadow-[0_0_30px_rgba(0,229,188,0.4)]">
+                        AVAIL NOW
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SPECIAL PRIVILEGE / COMMUNITY CLOSER -->
+        <section class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-16 mb-12 border-t border-vandalBorder/50">
+            <div class="bg-gradient-to-b from-vandalCard to-vandalDark border border-vandalTeal/30 rounded-2xl p-8 sm:p-12 text-center shadow-[0_0_40px_rgba(0,229,188,0.1)] max-w-7xl mx-auto relative overflow-hidden">
+                <!-- Decorative glow -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-vandalTeal to-transparent opacity-50"></div>
+                
+                <h2 class="font-orbitron text-2xl sm:text-3xl font-black text-white tracking-widest mb-6">
+                    💖 A SPECIAL PRIVILEGE FOR OUR CUSTOMERS!
+                </h2>
+                
+                <p class="text-gray-300 text-lg sm:text-xl font-medium mb-10">
+                    Your support means more to us than just a sale. ❤️
+                </p>
+
+                <div class="bg-vandalDark/80 border border-vandalBorder rounded-xl p-6 mb-10 text-left inline-block max-w-2xl shadow-lg">
+                    <p class="text-vandalTeal font-bold text-lg sm:text-xl mb-3 flex items-center gap-3 font-orbitron tracking-wide">
+                        <span>🎁</span> FREE PC TECH SUPPORT!
+                    </p>
+                    <p class="text-gray-400 leading-relaxed text-sm sm:text-base">
+                        Having PC problems outside of gaming? We’ll do our best to help you troubleshoot and get things running smoothly!
+                    </p>
+                </div>
+
+                <h3 class="font-orbitron text-lg sm:text-xl font-bold text-gray-100 mb-4 tracking-wider uppercase">
+                    🤝 WE’RE MORE THAN JUST SELLERS — WE’RE YOUR GAMING BUDDIES!
+                </h3>
+                
+                <p class="text-gray-400 leading-relaxed max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+                    At VANDAL GAMES PH, we’re here not just to provide games, but to help you whenever we can. Your satisfaction and gaming experience matter to us!
+                </p>
+
+                <div class="inline-block border-b-2 border-vandalTeal pb-3">
+                    <p class="font-orbitron text-base sm:text-lg text-white font-bold tracking-widest uppercase drop-shadow-md">
+                        🎮 More than games. More than business. We’re a community. ❤️
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WRAPPER FOR MASTER DATABASE VIEW -->
+    <div id="view-database" class="hidden-view max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow w-full">
+        <div class="mb-8 border-l-4 border-vandalTeal pl-4">
+            <h2 class="font-orbitron text-3xl font-black text-white uppercase tracking-widest drop-shadow-md">
+                MASTER DATABASE
+            </h2>
+            <p class="text-gray-400 mt-2 font-medium tracking-wide">Search and explore our entire registry of 10,000+ titles. -CTRL+F to search game-</p>
+        </div>
+        
+        <!-- ADDED BUTTONS FOR RETRO AND CLASSIC GAMES LISTS -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            <!-- PUT YOUR 6,666 RETRO GAMES LINK IN THE href BELOW -->
+            <a href="https://docs.google.com/spreadsheets/d/1iVVlwh4EahxPGHywj-DAZymWtAjcZWQkXmHkbA8WZ50/edit?usp=sharing" target="_blank" 
+               class="glow-btn flex-1 flex items-center justify-center gap-3 bg-vandalCard/80 text-vandalTeal font-orbitron font-bold text-sm sm:text-base px-6 py-4 rounded-xl uppercase tracking-widest border border-vandalTeal/50 transition-transform hover:scale-105 hover:bg-vandalCard">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                6,666 Retro Games List
+            </a>
+            
+            <!-- PUT YOUR CLASSIC GAMES LINK IN THE href BELOW -->
+            <a href="https://docs.google.com/spreadsheets/d/1gkmoV2Sqm9s3XQTOYBkJoRXxIyhiNimH4D87yGgStPM/edit?usp=sharing" target="_blank" 
+               class="glow-btn flex-1 flex items-center justify-center gap-3 bg-vandalCard/80 text-vandalTeal font-orbitron font-bold text-sm sm:text-base px-6 py-4 rounded-xl uppercase tracking-widest border border-vandalTeal/50 transition-transform hover:scale-105 hover:bg-vandalCard">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Classic Games (Pop-cap, Gamehouse, Bigfish)
+            </a>
+        </div>
+
+        <!-- Google Sheets Embed Container -->
+        <div class="w-full bg-vandalCard border border-vandalBorder rounded-xl overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] h-[800px] relative">
+            <div class="absolute inset-0 flex items-center justify-center -z-10 text-vandalTeal font-orbitron animate-pulse">
+                LOADING DATABASE...
+            </div>
+            <!-- Updated with your specific Google Sheets ID formatted for HTML embed -->
+            <iframe 
+                src="https://docs.google.com/spreadsheets/d/1jT3QAk-sfD_KSKA6vSzVHHgSfut2SLtjIv-NvwdbeZ4/htmlembed?widget=true&amp;headers=false&amp;chrome=false" 
+                class="w-full h-full border-none bg-white/5 relative z-10"
+                title="Vandal Games Master List">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- MINIMUM/RECOMMENDED SPECS MODAL -->
+    <div id="specModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 opacity-0 pointer-events-none flex items-center justify-center p-4">
+        <div class="bg-vandalCard border border-vandalTeal rounded-2xl w-full max-w-lg shadow-[0_0_40px_rgba(0,229,188,0.2)] overflow-hidden relative transform scale-95 mx-4 transition-transform duration-300">
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-vandalTeal transition z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="bg-vandalDark p-6 border-b border-vandalBorder relative">
+                <h2 id="modalTitle" class="font-orbitron text-2xl font-bold text-white mb-6 pr-8">Game Title</h2>
+                
+                <!-- Tabs -->
+                <div class="flex gap-2 w-full">
+                    <button id="tabMin" onclick="switchTab('minimum')" class="tab-btn flex-1 py-2 rounded-lg font-bold text-xs sm:text-sm border tab-active tracking-wider">
+                        MINIMUM
+                    </button>
+                    <button id="tabRec" onclick="switchTab('recommended')" class="tab-btn flex-1 py-2 rounded-lg font-bold text-xs sm:text-sm border tab-inactive tracking-wider">
+                        RECOMMENDED
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-vandalBorder pb-3">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider w-24">OS</span>
+                    <span id="modalOS" class="text-sm text-gray-200 font-medium">Loading...</span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-vandalBorder pb-3">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider w-24">CPU</span>
+                    <span id="modalCPU" class="text-sm text-gray-200 font-medium">Loading...</span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-vandalBorder pb-3">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider w-24">RAM</span>
+                    <span id="modalRAM" class="text-sm text-gray-200 font-medium">Loading...</span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-vandalBorder pb-3">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider w-24">GPU</span>
+                    <span id="modalGPU" class="text-sm text-gray-200 font-medium">Loading...</span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                    <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider w-24">Storage</span>
+                    <span id="modalStorage" class="text-sm text-gray-200 font-medium">Loading...</span>
+                </div>
+            </div>
+            
+            <div class="bg-vandalDark p-4 border-t border-vandalBorder flex justify-end">
+                <button onclick="closeModal()" class="px-6 py-2 bg-vandalBorder hover:bg-vandalTeal hover:text-black text-white text-sm font-bold rounded-lg transition tracking-widest">
+                    CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING PERSISTENT "AVAIL NOW" BUTTON -->
+    <a href="https://www.facebook.com/messages/t/61591489378986/" target="_blank" class="fixed bottom-6 right-6 z-50 glow-btn bg-vandalTeal text-vandalDark font-orbitron font-black text-sm sm:text-base px-6 py-4 rounded-full uppercase tracking-widest border border-white/20 shadow-[0_0_20px_rgba(0,229,188,0.6)] flex items-center gap-3 hover:scale-110 transition-transform duration-300">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.14 2 11.25c0 2.87 1.455 5.432 3.75 7.152v3.74l3.415-1.874c.91.252 1.862.382 2.835.382 5.523 0 10-4.14 10-9.25C22 6.14 17.523 2 12 2zm1.093 12.392l-2.825-3.025-5.503 3.025 6.06-6.425 2.88 3.025 5.448-3.025-6.06 6.425z"/></svg>
+        AVAIL NOW
+    </a>
+
+    <!-- FOOTER -->
+    <footer class="bg-vandalCard border-t border-vandalBorder py-12 mt-auto">
+        <div class="max-w-[1600px] mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h3 class="font-orbitron font-bold text-lg text-white mb-4">VANDAL GAMES <span class="text-vandalTeal">PH</span></h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Your ultimate vault of premium PC games, survival horror favorites, and legendary single-player adventures.</p>
+            </div>
+            <div class="md:text-center">
+                <h3 class="font-orbitron font-bold text-sm text-gray-300 mb-4 tracking-wider">QUICK LINKS</h3>
+                <ul class="text-sm text-gray-500 space-y-2">
+                    <li><a onclick="switchView('home')" class="cursor-pointer hover:text-vandalTeal transition">Home</a></li>
+                    <li><a onclick="switchView('database')" class="cursor-pointer hover:text-vandalTeal transition">Master Spreadsheet</a></li>
+                    <li><a href="https://www.facebook.com/messages/t/61591489378986/" target="_blank" class="hover:text-vandalTeal transition">Contact Support</a></li>
+                </ul>
+            </div>
+            <div class="md:text-right">
+                <h3 class="font-orbitron font-bold text-sm text-gray-300 mb-4 tracking-wider">LEGAL</h3>
+                <ul class="text-sm text-gray-500 space-y-2">
+                    <li><a href="#" class="hover:text-vandalTeal transition">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-vandalTeal transition">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1600px] mx-auto px-4 text-center text-xs text-gray-600 mt-8 pt-8 border-t border-vandalBorder/50">
+            &copy; 2026 VANDAL GAMES PH. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT DATABASE & LOGIC -->
+    <script>
+        // FAKE 1-SECOND PRELOADER LOGIC
+        // This guarantees the cool loading screen shows for exactly 1 second every time the site is opened
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            // Force it to stay visible for 1000ms (1 second)
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                // Wait for the CSS fade transition (0.8s) to finish before removing from layout
+                setTimeout(() => { 
+                    preloader.style.display = 'none'; 
+                }, 800);
+            }, 1000);
+        }
+
+        // ==========================================
+        // 20 GAMES DATABASE
+        // ==========================================
+        const gamesDatabase = [
+            {
+                title: "NBA 2k27",
+                tag: "Sports Simulation",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4356430/9152438fde7de9f4c20b4fd9072ba69f844dacab/header.jpg?t=1792163139",
+                video: "https://i.imgur.com/RilFH2t.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i3-9100 / AMD Ryzen 3 1200", ram: "8 GB RAM", gpu: "NVIDIA GTX 960 / AMD RX 470", storage: "110 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i5-10400 / AMD Ryzen 5 3600", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 / AMD RX 5700", storage: "110 GB SSD" }
+                }
+            },
+            {
+                title: "Black Myth: Wukong",
+                tag: "Action RPG",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg?t=1760601605",
+                video: "https://i.imgur.com/lQ4AzVh.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 5 1600", ram: "16 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "130 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-9700 / AMD Ryzen 5 5600", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 / AMD RX 5700 XT", storage: "130 GB SSD" }
+                }
+            },
+            {
+                title: "Metaphor: ReFantazio",
+                tag: "JRPG",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2679460/header.jpg?t=1764776325",
+                video: "https://i.imgur.com/5gwuWl5.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-3470 / AMD FX-8350", ram: "6 GB RAM", gpu: "NVIDIA GTX 750 Ti / AMD R7 360", storage: "93 GB" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i5-7600 / AMD Ryzen 5 2600", ram: "8 GB RAM", gpu: "NVIDIA GTX 970 / AMD RX 480", storage: "93 GB" }
+                }
+            },
+            {
+                title: "Hogwarts Legacy",
+                tag: "Open World RPG",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/990080/be2971b1023bccb04f993887d70ef4d2060262cf/header.jpg?t=1790708992",
+                video: "https://i.imgur.com/9TMPMpa.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-6600 / AMD Ryzen 5 1400", ram: "16 GB RAM", gpu: "NVIDIA GTX 960 / AMD RX 470", storage: "85 GB" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i7-8700 / AMD Ryzen 5 3600", ram: "16 GB RAM", gpu: "NVIDIA GTX 1080 Ti / AMD RX 5700 XT", storage: "85 GB SSD" }
+                }
+            },
+            {
+                title: "GTA V",
+                tag: "Action",
+                cover: "https://vulcanpost.com/wp-content/uploads/2015/04/GTAV-Review.jpg",
+                video: "https://i.imgur.com/d2xQs8b.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core 2 Quad CPU Q6600", ram: "4 GB RAM", gpu: "NVIDIA 9800 GT / AMD HD 4870", storage: "110 GB" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i5 3470", ram: "8 GB RAM", gpu: "NVIDIA GTX 660 / AMD HD 7870", storage: "110 GB" }
+                }
+            },
+            {
+                title: "Resident Evil Requiem",
+                tag: "Survival Horror",
+                cover: "https://catholicgamereviews.com/wp-content/uploads/2026/03/RE9-Title-1920x1080.jpg",
+                video: "https://i.imgur.com/NFaKSK5.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-10400 / AMD Ryzen 5 3600", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 / AMD RX 6600", storage: "80 GB SSD" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-12700 / AMD Ryzen 7 5800X3D", ram: "32 GB RAM", gpu: "NVIDIA RTX 4070 / AMD RX 7800 XT", storage: "80 GB SSD" }
+                }
+            },
+            {
+                title: "The Witcher 3: Wild Hunt Remastered",
+                tag: "RPG",
+                cover: "https://press.cdn.cdpr.app/news/33a063fc417f1a4ccd362849de934bb1_q90_1024x576.png",
+                video: "https://i.imgur.com/MRvVWo5.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-2500K / AMD Phenom II X4 940", ram: "6 GB RAM", gpu: "NVIDIA GTX 660 / AMD HD 7870", storage: "50 GB" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i5-7400 / AMD Ryzen 5 1600", ram: "8 GB RAM", gpu: "NVIDIA GTX 970 / AMD RX 480", storage: "50 GB SSD" }
+                }
+            },
+            {
+                title: "007 First Light",
+                tag: "Stealth Action",
+                cover: "https://www.gamespot.com/wp-content/uploads/2026/10/007-Large.jpeg",
+                video: "https://i.imgur.com/XE0whO3.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 5 2600", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "65 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-10700K / AMD Ryzen 5 5600X", ram: "16 GB RAM", gpu: "NVIDIA RTX 3060 / AMD RX 6700 XT", storage: "65 GB SSD" }
+                }
+            },
+            {
+                title: "Clair Obscur: Expedition 33",
+                tag: "Turn-Based RPG",
+                cover: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/eccd7fa054e32bed3213fb92f6089bebd9978215/capsule_616x353.jpg?t=1782830877",
+                video: "https://i.imgur.com/DZIt4dl.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-6600K / AMD Ryzen 3 1300X", ram: "8 GB RAM", gpu: "NVIDIA GTX 970 / AMD RX 570", storage: "40 GB" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i7-8700K / AMD Ryzen 5 3600", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 / AMD RX 5700", storage: "40 GB SSD" }
+                }
+            },
+            {
+                title: "Poppy Playtime",
+                tag: "Puzzle Horror",
+                cover: "https://cdn1.epicgames.com/spt-assets/465c0f6c95d04b1c86b280b4925fee2d/poppy-playtime-yp725.jpg",
+                video: "https://i.imgur.com/Mrd1mSD.mp4",
+                specs: {
+                    minimum: { os: "Windows 10", cpu: "Intel Core i5", ram: "8 GB RAM", gpu: "NVIDIA GTX 1050 / Radeon RX 560", storage: "20 GB" },
+                    recommended: { os: "Windows 10", cpu: "Intel Core i5", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060 / Radeon RX 580", storage: "20 GB" }
+                }
+            },
+            {
+                title: "MiSide",
+                tag: "Psychological Horror",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2527500/capsule_616x353.jpg?t=1792047751",
+                video: "https://i.imgur.com/Tq7FUvj.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i3", ram: "4 GB RAM", gpu: "NVIDIA GTX 750 Ti", storage: "10 GB" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i5", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060", storage: "10 GB" }
+                }
+            },
+            {
+                title: "SILENT HILL: Townfall",
+                tag: "Atmospheric Horror",
+                cover: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1636440/7786de9407a63dd4917f2d16844f429007b0a0e0/capsule_616x353.jpg?t=1790222467",
+                video: "https://i.imgur.com/PMgY4SW.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 3 3300X", ram: "12 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "40 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-8700K / AMD Ryzen 5 3600X", ram: "16 GB RAM", gpu: "NVIDIA RTX 2070 / AMD RX 6600 XT", storage: "40 GB SSD" }
+                }
+            },
+            {
+                title: "Stellar Blade",
+                tag: "Action Slasher",
+                cover: "https://i.imgur.com/mjSoXMJ.png",
+                video: "https://i.imgur.com/mi0Mi4Y.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 5 1600", ram: "16 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "70 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-10700K / AMD Ryzen 5 5600X", ram: "16 GB RAM", gpu: "NVIDIA RTX 3060 / AMD RX 6700 XT", storage: "70 GB SSD" }
+                }
+            },
+            {
+                title: "Left 4 dead 2",
+                tag: "Zombie Shooter",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/550/capsule_616x353.jpg?t=1772742214",
+                video: "https://i.imgur.com/yjEojVp.mp4",
+                specs: {
+                    minimum: { os: "Windows 7/8/10", cpu: "Pentium 4 3.0GHz", ram: "2 GB RAM", gpu: "NVIDIA 6600 / ATI X800", storage: "13 GB" },
+                    recommended: { os: "Windows 10", cpu: "Intel Core 2 Duo 2.4GHz", ram: "4 GB RAM", gpu: "NVIDIA 7600 / ATI X1600", storage: "13 GB" }
+                }
+            },
+            {
+                title: "Death Stranding 2",
+                tag: "Cinematic Adventure",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3280350/6270c77b0729e2df0a17d660286eeddfd9169386/header.jpg?t=1774022345",
+                video: "https://i.imgur.com/fcXb793.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 3 3300X", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 590", storage: "80 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-8700 / AMD Ryzen 5 3600", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 / AMD RX 5700", storage: "80 GB SSD" }
+                }
+            },
+            {
+                title: "God of War Ragnarok",
+                tag: "Action Adventure",
+                cover: "https://blog.playstation.com/tachyon/2021/09/God-of-War-Ragnarok-Featured-image.jpg?resize=1088%2C612&crop_strategy=smart",
+                video: "https://i.imgur.com/vDZ0CZ2.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-4670K / AMD Ryzen 3 1200", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 5500 XT", storage: "190 GB SSD" },
+                    recommended: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8600 / AMD Ryzen 5 3600", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 Super / AMD RX 5700", storage: "190 GB SSD" }
+                }
+            },
+            {
+                title: "CONTROL Resonant",
+                tag: "Paranormal Action",
+                cover: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3669870/1e0c76e4253d347bb1304c3f213570251d924edf/header.jpg?t=1790259464",
+                video: "https://i.imgur.com/1RnIV8J.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-7500 / AMD Ryzen 3 1300X", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "50 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i5-8600K / AMD Ryzen 7 2700X", ram: "16 GB RAM", gpu: "NVIDIA RTX 2060 / AMD RX 5700", storage: "50 GB SSD" }
+                }
+            },
+            {
+                title: "PRAGMATA",
+                tag: "Sci-Fi Action",
+                cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3357650/5ed21dc307cb775de7c6143b2222b423e6258067/page_bg_raw.jpg?t=1791454600",
+                video: "https://i.imgur.com/6dZ5X7C.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 5 1600", ram: "16 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "60 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-10700 / AMD Ryzen 5 5600X", ram: "16 GB RAM", gpu: "NVIDIA RTX 3060 / AMD RX 6700 XT", storage: "60 GB SSD" }
+                }
+            },
+            {
+                title: "Crimson Desert",
+                tag: "Open World Action",
+                cover: "https://gbatemp.net/data/reviews/boxart/full/2711.jpg?1775907650",
+                video: "https://i.imgur.com/8UN4OnH.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-7600K / AMD Ryzen 5 1600X", ram: "12 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 590", storage: "100 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-10700K / AMD Ryzen 7 5800X", ram: "16 GB RAM", gpu: "NVIDIA RTX 3070 / AMD RX 6800", storage: "100 GB SSD" }
+                }
+            },
+            {
+                title: "Assassin’s Creed Black Flag Resynced",
+                tag: "Maritime Action",
+                cover: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3751950/caf2c6ef32bdbfaca877f917cea1076a4f0a520e/capsule_616x353.jpg?t=1787915122",
+                video: "https://i.imgur.com/60JFdFT.mp4",
+                specs: {
+                    minimum: { os: "Windows 10 64-bit", cpu: "Intel Core i5-8400 / AMD Ryzen 5 1600", ram: "8 GB RAM", gpu: "NVIDIA GTX 1060 / AMD RX 580", storage: "75 GB" },
+                    recommended: { os: "Windows 11 64-bit", cpu: "Intel Core i7-9700K / AMD Ryzen 5 3600X", ram: "16 GB RAM", gpu: "NVIDIA RTX 2070 / AMD RX 5700 XT", storage: "75 GB SSD" }
+                }
+            }
+        ];
+
+        // Render HTML Cards
+        function renderGames() {
+            const grid = document.getElementById('gameGrid');
+            if(!grid) return; // Prevent errors if grid isn't found immediately
+            grid.innerHTML = '';
+
+            gamesDatabase.forEach((game, index) => {
+                const card = document.createElement('div');
+                card.className = "card-hover bg-vandalCard border border-vandalBorder rounded-xl overflow-hidden flex flex-col group h-[380px]";
+                card.innerHTML = `
+                    <div class="relative w-full h-48 overflow-hidden cursor-pointer group/media" onclick="openModal(${index})">
+                        <img src="${game.cover}" alt="${game.title}" class="absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-300 group-hover/media:opacity-0">
+                        <video src="${game.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>
+                        <div class="absolute bottom-3 left-3 bg-vandalDark/90 backdrop-blur border border-vandalTeal/50 px-2 py-1 rounded text-[10px] font-bold text-vandalTeal uppercase tracking-wider shadow-md z-20">
+                            ${game.tag}
+                        </div>
+                    </div>
+                    <div class="p-5 flex flex-col justify-between flex-grow z-20 bg-vandalCard relative">
+                        <h3 class="font-orbitron text-base sm:text-lg font-bold text-white line-clamp-2 cursor-pointer group-hover:text-vandalTeal transition" onclick="openModal(${index})">
+                            ${game.title}
+                        </h3>
+                        <button onclick="openModal(${index})" class="w-full py-2.5 mt-auto rounded-lg border border-vandalTeal text-vandalTeal text-xs sm:text-sm font-semibold hover:bg-vandalTeal hover:text-vandalDark transition-colors tracking-wide">
+                            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> VIEW INFO
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Modal Logic
+        const specModal = document.getElementById('specModal');
+        const modalInner = specModal.querySelector('div');
+        let currentModalGameIndex = 0;
+        let currentTab = 'minimum';
+
+        function openModal(gameIndex) {
+            currentModalGameIndex = gameIndex;
+            const game = gamesDatabase[gameIndex];
+            
+            document.getElementById('modalTitle').textContent = game.title;
+            switchTab('minimum'); // Reset to minimum on open
+            
+            specModal.classList.remove('opacity-0', 'pointer-events-none');
+            modalInner.classList.remove('scale-95');
+            modalInner.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            specModal.classList.add('opacity-0', 'pointer-events-none');
+            modalInner.classList.remove('scale-100');
+            modalInner.classList.add('scale-95');
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            const game = gamesDatabase[currentModalGameIndex];
+            const specsData = game.specs[tabName];
+            
+            document.getElementById('modalOS').textContent = specsData.os;
+            document.getElementById('modalCPU').textContent = specsData.cpu;
+            document.getElementById('modalRAM').textContent = specsData.ram;
+            document.getElementById('modalGPU').textContent = specsData.gpu;
+            document.getElementById('modalStorage').textContent = specsData.storage;
+
+            const tabMin = document.getElementById('tabMin');
+            const tabRec = document.getElementById('tabRec');
+
+            if(tabName === 'minimum') {
+                tabMin.className = "tab-btn flex-1 py-2 rounded-lg font-bold text-xs sm:text-sm border tab-active tracking-wider";
+                tabRec.className = "tab-btn flex-1 py-2 rounded-lg font-bold text-xs sm:text-sm border tab-inactive tracking-wider";
+            } else {
+                tabRec.className = "tab-btn flex-1 py-2 rounded-lg font-bold text-xs sm:text-sm border tab-active tracking-wider";
+                tabMin.className = "tab-btn flex-1 py-2 rounded-lg font-bold text-xs sm:text-sm border tab-inactive tracking-wider";
+            }
+        }
+
+        // Close modal when clicking outside the content box
+        specModal.addEventListener('click', (e) => {
+            if(e.target === specModal) closeModal();
+        });
+
+        // VIEW SWITCHING LOGIC (SPA)
+        function switchView(viewName) {
+            const homeView = document.getElementById('view-home');
+            const dbView = document.getElementById('view-database');
+            const navHome = document.getElementById('nav-home');
+            const navDb = document.getElementById('nav-db');
+
+            // Scroll to top automatically on switch
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (viewName === 'home') {
+                homeView.classList.remove('hidden-view');
+                dbView.classList.add('hidden-view');
+                navHome.classList.add('nav-active', 'text-vandalTeal');
+                navHome.classList.remove('text-gray-300');
+                navDb.classList.remove('nav-active', 'text-vandalTeal');
+                navDb.classList.add('text-gray-300');
+            } else if (viewName === 'database') {
+                homeView.classList.add('hidden-view');
+                dbView.classList.remove('hidden-view');
+                navDb.classList.add('nav-active', 'text-vandalTeal');
+                navDb.classList.remove('text-gray-300');
+                navHome.classList.remove('nav-active', 'text-vandalTeal');
+                navHome.classList.add('text-gray-300');
+            }
+        }
+
+        // Init Grid
+        renderGames();
+    </script>
+</body>
+</html>
